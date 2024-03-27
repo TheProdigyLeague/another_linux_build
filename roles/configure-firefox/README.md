@@ -1,13 +1,15 @@
-# Ansible Task README
+![ansible](https://github.com/TheProdigyLeague/another_linux_build/assets/30985576/ac0147e2-cb1e-4a05-8e32-22995b6681ec)
 
-## Updating Firefox Policies
+# Updating Firefox Policies
 
-This Ansible task is designed to automate the process of updating Firefox policies on a target system using the policy templates provided by Mozilla. The task leverages the Jinja2 template engine to customize the `policies.json` file and then deploys it to the specified destination on the target system.
+Using the Mozilla(c) policy templates, this Ansible(c) job will automate the process of upgrading Firefox rules on a target machine. The `policies.json` file is customized by the task using the Jinja2 template engine, and it is then deployed to the designated location on the target system.
 
-### Task Details
+## Task Details
 
 - **Task Name:** Updating Firefox Policies
 - **Task Module:** `template`
 - **Source Template:** `templates/policies.json.j2`
 - **Destination Path:** `/usr/share/firefox-esr/distribution/policies.json`
 - **Privilege Escalation:** The task uses `become` with `sudo` as the privilege escalation method.
+
+# eof
