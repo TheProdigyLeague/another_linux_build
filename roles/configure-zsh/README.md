@@ -1,24 +1,24 @@
-# Ansible Playbook README
+![ansible](https://github.com/TheProdigyLeague/another_linux_build/assets/30985576/1dc80eaf-af70-4d7a-80ef-2da9f26918cb)
 
-## Zsh and Shell Configuration
+# .zsh .sh config
 
-This Ansible playbook focuses on configuring the Zsh shell and related components. The playbook is modular, organized into separate tasks for different aspects of shell configuration.
+Ansible(c) playbook focuses on configuring the Zsh shell and related components. Mods are organized into separate tasks for different aspects of shell configuration.
 
-### Included Tasks
+## Include
 
 1. **Zshrc Configuration**
-   - File: `zshrc.yml`
-   - Includes tasks for copying the Zsh configuration file (`zshrc`) to the home directory.
+   - `zshrc.yml`
+   - task copying `Zsh config | zshrc` to `/home/dir`
 
 2. **Zsh Theme Configuration**
-   - File: `zshtheme.yml`
-   - Includes tasks for checking and copying the custom Zsh theme (`agnoster.zsh-theme`) to the Oh My Zsh themes directory.
+   - `zshtheme.yml`
+   - task checking and copying custom Zsh theme (`agnoster.zsh-theme`) to Oh My Zsh themes directory.
 
 3. **Zsh Autosuggestions Configuration**
-   - File: `zsh-autosuggestions.yml`
-   - Includes tasks for checking and installing Zsh Autosuggestions from the official GitHub repository.
+   - `zsh-autosuggestions.yml`
+   - task checking and installing Zsh Autosuggestions from official GitHub repository.
 
 4. **Atuin Configuration**
-   - File: `atuin.yml`
-   - Includes tasks for checking and installing Atuin, a Zsh plugin manager, and copying the Atuin configuration file (`config.toml`).
-
+   - `atuin.yml`
+   - task checking and installing Atuin, Zsh plugin manager, copying the Atuin configuration file (`config.toml`).
+# eof
