@@ -1,35 +1,36 @@
-# Ansible Playbook README
+![ansible](https://github.com/TheProdigyLeague/another_linux_build/assets/30985576/cdf38f92-d373-4d91-b1be-13d2b580c820)
 
-## Tool Installation Playbook
+# Ansible(c) Playbook
 
-This Ansible playbook focuses on installing various tools and utilities on a target system. The playbook is modular, with separate tasks for different categories of tools.
+## Tools
+
+Ansible(c) focuses on installing various tools and utilities on a target, system, modular, and with separate tasks for different categories of tools.
 
 ### Included Tasks
 
-1. **APT Packages Installation**
-   - File: `apt.yml`
-   - Installs essential APT packages based on the selected installation mode (`light` or `full`).
+1. **apt pkg install**
+   - `apt.yml`
+   - Essential packages based on selected installation mode (`light` or `full`).
 
-2. **Burp Suite Installation**
-   - File: `burp.yml`
+2. **Burp Suite**
+   - `burp.yml`
    - Downloads and configures Burp Suite Community and Pro versions, including CA certificate setup.
 
-3. **Ruby Gems Installation**
+3. **Ruby Gems**
    - File: `gem.yml`
    - Installs Ruby gems used for various purposes.
 
 4. **GitHub Repositories Cloning**
-   - File: `github.yml`
-   - Clones various GitHub repositories into the `/opt/` directory.
+   - `github.yml`
+   - Clones various GitHub repositories into `/opt/` directory.
 
-5. **Pip Packages Installation**
-   - File: `pip.yml`
+5. **Pip Packages**
+   - `pip.yml`
    - Installs Python packages using pip or pipx, including some tools and libraries.
 
-6. **Sublime Text Installation**
-   - File: `sublimetext.yml`
-   - Installs Sublime Text and configures user preferences.
+~~6. **Sublime Text**- `sublimetext.yml` Installs Sublime Text and configures user preferences.~~
 
 7. **ZedEncrypt Installation**
-   - File: `zedencrypt.yml`
-   - Installs ZedEncrypt tool on the target system.
+   - `zedencrypt.yml`
+   - Installs ZedEncrypt tool on target system.
+-- eof --
