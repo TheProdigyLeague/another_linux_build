@@ -1,19 +1,16 @@
-# Ansible Playbook README
+![ansible](https://github.com/TheProdigyLeague/another_linux_build/assets/30985576/e98eca95-b414-460f-8525-2d65efac9570)
 
-## Logging and Security Configuration
+# Logging and Security Configuration
 
-This Ansible playbook focuses on configuring logging, security, and system-related settings. The playbook is modular, organized into separate tasks for different aspects of system configuration.
+This Ansible(c) playbook logs security configurations, and system settings. Modular specifications, organized into tasks of different aspects.
 
-### Included Tasks
+## Included Tasks
 
-1. **UFW (Uncomplicated Firewall) Configuration**
-   - File: `ufw.yml`
-   - Includes tasks for installing UFW, setting up firewall policies, and enabling logging for UFW.
+1. **Auditd Configuration**
+   - `auditd.yml`
+   - install pkg, config, and audit rules
 
-2. **Auditd Configuration**
-   - File: `auditd.yml`
-   - Includes tasks for installing the `auditd` package, configuring audit rules, and restarting the `auditd` service.
-
-3. **General System Configuration**
-   - File: `general.yml`
-   - Includes tasks for setting the system timezone to "Europe/Paris," updating the local database, and enabling the `rsyslog` service.
+2. **General System Configuration**
+   - `general.yml`
+   -  sets timezones, updates dbs, and enables `rsyslog.srvc`
+# eof
