@@ -17,7 +17,7 @@ Ansible(c) focuses on installing various tools and utilities on a target, system
    - Downloads and configures Burp Suite Community and Pro versions, including CA certificate setup.
 
 3. **Ruby Gems**
-   - File: `gem.yml`
+   - `gem.yml`
    - Installs Ruby gems used for various purposes.
 
 4. **GitHub Repositories Cloning**
