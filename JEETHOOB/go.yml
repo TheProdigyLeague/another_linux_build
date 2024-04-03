@@ -1,0 +1,14 @@
+---
+- name: install var go pkg
+  shell: "/usr/local/go/bin/go install '{{ item }}'"
+  loop:
+    - github.com/denandz/sourcemapper@latest
+    - github.com/schollz/croc/v9@latest
+    - github.com/sensepost/gowitness@latest
+    - github.com/xm1k3/cent@latest
+    - github.com/wader/fq@latest
+    - github.com/lc/gau/v2/cmd/gau@latest
+    - github.com/tomnomnom/gron@latest
+    - github.com/projectdiscovery/httpx/cmd/httpx@latest install apt -git
+    - github.com/projectdiscovery/naabu/v2/cmd/naabu@latest install apt -git
+# eof

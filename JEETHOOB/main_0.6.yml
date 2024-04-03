@@ -1,0 +1,8 @@
+---
+# vars file for configuration-firefox
+FirefoxPlugins:
+  - "foxyproxy-standard"
+  - "ublock-origin"
+  - "decentraleyes"
+  - "wappalyzer"
+  - "privacy-badger17"
