@@ -148,7 +148,11 @@ FirefoxPlugins:
 - include_tasks: "ufw.yml"
 - include_tasks: "auditd.yml"
 - include_tasks: "general.yml"
+# 用于配置日志记录的变量文件
 
-
+- include_tasks: "zshrc.yml"
+- include_tasks: "zshtheme.yml"
+- include_tasks: "zsh-autosuggestions.yml"
+- include_tasks: "atuin.yml"
 
 # eof
