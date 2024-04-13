@@ -1,234 +1,193 @@
-# Write log files relative to this directory
+// ****************************************************************************************************
+// *                                                                                                  *
+// *                                                                                                  *
+// *                                                                                                  *
+// *                                                                                                  *
+// *                                                                                                  *
+// *   ▄            ▄▄▄▄▄▄▄▄▄▄▄  ▄         ▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄               ▄▄▄▄▄▄▄▄▄▄▄   *
+// *  ▐░▌          ▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌             ▐░░░░░░░░░░░▌  *
+// *  ▐░▌          ▐░█▀▀▀▀▀▀▀█░▌▐░▌       ▐░▌▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀▀▀ ▐░▌             ▐░█▀▀▀▀▀▀▀▀▀   *
+// *  ▐░▌          ▐░▌       ▐░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░▌          ▐░▌             ▐░▌            *
+// *  ▐░▌          ▐░█▄▄▄▄▄▄▄█░▌▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄▄▄ ▐░▌             ▐░▌            *
+// *  ▐░▌          ▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌             ▐░▌            *
+// *  ▐░▌          ▐░█▀▀▀▀▀▀▀█░▌▐░▌       ▐░▌▐░█▀▀▀▀█░█▀▀ ▐░█▀▀▀▀▀▀▀▀▀ ▐░▌             ▐░▌            *
+// *  ▐░▌          ▐░▌       ▐░▌▐░▌       ▐░▌▐░▌     ▐░▌  ▐░▌          ▐░▌             ▐░▌            *
+// *  ▐░█▄▄▄▄▄▄▄▄▄ ▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄█░▌▐░▌      ▐░▌ ▐░█▄▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄▄▄  ▄ ▐░█▄▄▄▄▄▄▄▄▄   *
+// *  ▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌▐░░░░░░░░░░░▌  *
+// *   ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀  ▀▀▀▀▀▀▀▀▀▀▀   *
+// *                                                                                                  *
+// *                                                                                                  *
+// *                                                                                                  *
+// *                                                                                                  *
+// *                                                                                                  *
+// ****************************************************************************************************
+# active = yes
+# direction = out
+# type = always
+# format = string
+# path = /usr/local/sbin/laurel
+# args = --config /etc/laurel/config.toml
+
+// write log fs rel to dir, drop privileges from root to user. Periodic time window for status info print -> syslog log include run version, config and parse.
 directory = "/var/log/laurel"
-# Drop privileges from root to this user
-user = "_laurel"
-# The periodical time window in seconds for status information to be printed to Syslog.
-# Status report includes the running version, config and parsing stats.
-# Default is 0 --> no status reports.
-statusreport-period = 0
-# By default, audit events are read from stdin ("stdin"). Alternatively, they
-# can be consumed from an existing UNIX domain socket ("unix:/path/to/socket")
-input = "stdin"
+    user = "_laurel"
+    
+    // Default is 0 -> no status reports.
+    
+    statusreport-period = 0
+    
+    // default audit event read from stdin. Consume from existing UNIX domain socket ("unix:/path/to/socket")
 
-[auditlog]
-# Base file name for the JSONL-based log file. Set to "-" to log to stdout. In this case 
-# other log file related settings will be ignored.
-file = "audit.log"
-# Rotate when log file reaches this size (in bytes)
-size = 5000000
-# When rotating, keep this number of generations around
-generations = 10
-# Grant read permissions on the log files to these users, using
-# POSIX ACLs
-read-users = [ ]
+    input = "stdin"
 
-# Add a prefix to every output line. The CEE cookie can be used to
-# instruct consumers to parse the JSON document, cf.
+[auditlog]:
+
+    // base fs name for jsonl-based log file. Sets "-" log -> stdout. Other fs related settings ignored.
+
+    file = "audit.log"
+
+
+    // rotate log fs byte size
+
+    size = 5000000
+
+
+    // rotate number generation around = 10, grant permission log fs to user POSIX ACL
+
+    generations = 10
+    read-users = ['all'];break
+    // + prefix output line CEE cookie instruct end-users parsing JSON docs cf.
 # https://www.rsyslog.com/doc/master/configuration/modules/mmjsonparse.html
-# line-prefix = "@cee: "
 
-# [debug]
-# dump-state-period = 120
+    // line-prefix = "@cee:"
 
-# [debug.log]
-# file = "debug.log"
-# size = 1000000
-# generations = 3
+[debug]:
+    [debug.log]:
+        [debug.parse-error-log]:
 
-# [debug.parse-error-log]
-# file = "parse-error.log"
-# size = 1000000
-# generations = 3
+    // dump-state-perioud = 120 file = "debug.log" size = 1000000 generations = 3 | file = "parse-error.log" size = 1000000 generations = 3
 
-[transform]
+    [transform]:
 
-# "array" (the default) causes EXECVE a0, a1, a2 … arguments to be
-# output as a list of strings, "ARGV". This is the default, it allows
-# analysts to reliably reproduce what was executed.
-#
-# "string" causes arguments to be concatenated into a single string,
-# separated by space characters, "ARGV_STR". This form allows for
-# easier grepping, but it is impossible to tell if space characters in
-# the resulting string are a separator or were part of an individual
-# argument in the original command line.
+    // array default causes EXECve a0, a1, a2 args output -> list of strings "ARGV" default allows analysts to reproduce executeables. "string" causes args to cat -> single string/space/char. Allows grep but no telling if space chars in resulted string as seperator or individual args in cmd:l
 
-execve-argv = [ "array" ]
+    execve-argv = [ "array" ]:
 
-# execve-argv = [ "array", "string" ]
+    // execve-argv = [ "array", "string" ] trim long EXECVE.ARGV and EXECVE.ARGV_STR entry. Cut from middle args list and mark indicator of how many args/bytes to cut/insert execve-argv-limit-bytes = 10000
 
-# Trim excessively long EXECVE.ARGV and EXECVE.ARGV_STR entries.
-# Excess is cut from the middle of the argument list and a marker
-# indicating how many arguments / bytes have been cut is inserted.
+    [translate]:
 
-# execve-argv-limit-bytes = 10000
+    // perf translation of numv done by auditd if config with log_format=ENRICH, arch, syscall, sockaddr struct
 
-[translate]
+    universal = false
 
-# Perform translations of numeric values that can also be done by
-# auditd if configured with log_format=ENRICHED.
+    // UID, GID vals
 
-# arch, syscall, sockaddr structures
-universal = false
-# UID, GID values
-user-db = false
+    user-db = false
 
-[enrich]
+    [enrich]:
 
-# Add context (event-id, comm, exe, ppid) for *pid entries
-pid = true
+    // + contxt, event-id, comms, exe, ppid for pid entry
 
-# List of environment variables to log for every EXECVE event
-execve-env = [ "LD_PRELOAD", "LD_LIBRARY_PATH" ]
+    pid = true
 
-# Add container context to SYSCALL-based events
-container = true
+break;env.lst\var\log\EXECVE_EVENT -execve-env = ["LD_PRELOAD","LD_LIB_PATH"]:
+// + container context -> SYSCALL-based event container = true | + script context ->SYSCALL execve event script = true
+    container = true
+    script = true
 
-# Add script context to SYSCALL execve events
-script = true
+    // Deprecated. Use pid instead. parent-info = false
 
-# Deprecated. Use pid instead.
-# parent-info = false
-
-[label-process]
-
-# Audit records that contain certain keys can be reused as a label
-# attached to the process.
-#
-# This is useful in combination with audit rules such as:
-# -w <path> -p x -k <key>
-# e.g.: -w /usr/bin/dpkg -p x -k software_mgmt
-label-keys = [ "software_mgmt" ]
-
-# Labels can be attached to or removed from processes that run certain
-# programs. The file program file path (SYSCALL.exe or /proc/pid/exe)
-# is matched against regular expressions. This is useful for programs
-# that cannot be identified through auditd file watches (-w <path> -p
-# x -k <key>).
-label-exe.'^/opt/.*/bin/java$' = 'java'
-label-exe.'^/usr/lib/jvm/.*/bin/java$' = 'java'
-label-exe.'^/snap/amazon-ssm-agent/\d+/' = 'amazon-ssm-agent'
-
+    [label-process]:
+    // audit record contain keys resuseable label attachment to proc. usefull for comb audit rule        
+    -w <path> -p x -k <key>
+    -w /usr/bin/dpkg -p x -k software_mgmt
+    label-keys = [ "software_mgmt" ]:
+    // label attachment rm proc run prog. fs/file/path_SYSCALL.exe | /proc/pid/exe | match regex for prog with no ID --> auditd-fs-match 
+    -w <path> -p
+        x -k <key>
+            label-exe.'^/opt/.*/bin/java$' = 'java'
+            label-exe.'^/usr/lib/jvm/.*/bin/java$' = 'java'
+            label-exe.'^/snap/amazon-ssm-agent/\d+/' = 'amazon-ssm-agent'
 unlabel-exe."bin/php$" = "java"
-
-# Labels can be attached to or removed from processes that have been identified as
-# scripts.
+break;
+// label attachment rm from proc id script
 label-script."maint" = "^/root/maint-.*[.]sh$"
+    unlabel-script-"maint" = "…"
+        // proc label propagate spawn child proc. use for marks in entire subtrees of children that spawn with certain context, sys man, tool, container, .dll, ssh server, cron
 
-# unlabel-script-"maint" = "…"
+propagate-labels = [ "software_mgmt", "amazon-ssm-agent" ]:
 
-# Process Labels can be propagated to spawned child processes. This is
-# useful for marking an entire subtree of children that have been
-# spawned within certain contexts (e.g. system management tools,
-# container runtimes, ssh servers, cron, etc.).
-propagate-labels = [ "software_mgmt", "amazon-ssm-agent" ]
+    [filter]://audit record attachment key generator LAUREL, discard
 
-[filter]
-
-# When audit records with attached keys are being generated,
-# LAUREL will discard these.
-
-# filter-keys = ["filter-this"]
-
-# In addition to key based filtering it is also possible to configure label based 
-# filtering. This alows the possibility to filter based on parent processes.
-
-# filter-labels = ["software_mgmt"]
-
-# Filter events without specified key
-
-filter-null-keys = false
-
-## where to store your database, default is your system data directory
-## linux/mac: ~/.local/share/atuin/history.db
-## windows: %USERPROFILE%/.local/share/atuin/history.db
-# db_path = "~/.history.db"
-
-## where to store your encryption key, default is your system data directory
-## linux/mac: ~/.local/share/atuin/key
-## windows: %USERPROFILE%/.local/share/atuin/key
+        filter-keys = ["filter-this"]: // + key based filter. config label filter. filter, parent subprocess
+        filter-labels = ["software_mgmt"]: // event without key
+        filter-null-keys = false break;
+// db storage default in end-user sys.dat dir
+linux/mac: ~/.local/share/atuin/history.db
+windows: %USERPROFILE%/.local/share/atuin/history.db
+db_path = "~/.history.db"
+// crypto key storage default sys.dat dir
+linux/mac: ~/.local/share/atuin/key
+windows: %USERPROFILE%/.local/share/atuin/key
 key_path = "~/.local/share/atuin/key"
-
-## where to store your auth session token, default is your system data directory
-## linux/mac: ~/.local/share/atuin/session
-## windows: %USERPROFILE%/.local/share/atuin/session
-# session_path = "~/.session"
-
-## date format used, either "us" or "uk"
+// 0auth session token storage, default sys.dat dir
+linux/mac: ~/.local/share/atuin/session
+windows: %USERPROFILE%/.local/share/atuin/session
+    #session_path = "~/.session"
+        // date format used, either "us" or "uk"
 dialect = "uk"
 
-## enable or disable automatic sync
+// enable or disable automatic sync
 auto_sync = false
 
-## enable or disable automatic update checks
+// enable or disable automatic update checks
 update_check = true
 
-## address of the sync server
+// address of the sync server
 sync_address = "0.0.0.0"
 
-## how often to sync history. note that this is only triggered when a command
-## is ran, so sync intervals may well be longer
-## set it to 0 to sync after every command
+    // sync history only trigger when cmd is ran. sync interval set 0 after cmd
 sync_frequency = "999999999999999h"
 
-## which search mode to use
-## possible values: prefix, fulltext, fuzzy, skim
-# search_mode = "fuzzy"
+// search mode val: prefix, fulltext, fuzzy, skim
+search_mode = "fuzzy"
 
-## which filter mode to use
-## possible values: global, host, session, directory
+// filter mode val: global, host, session, dir
 filter_mode = "host"
 
-## which filter mode to use when atuin is invoked from a shell up-key binding
-## the accepted values are identical to those of "filter_mode"
-## leave unspecified to use same mode set in "filter_mode"
+// filter mode: atuin, invoke, sh, up-key, bind and accept val id "filter_mode" leave none with same mode set
 filter_mode_shell_up_key_binding = "global"
 
-## which style to use
-## possible values: auto, full, compact
+    # val: auto, full, compact
 style = "compact"
 
-## the maximum number of lines the interface should take up
-## set it to 0 to always go full screen
+// max numb:l uif set 0 full screen
 # inline_height = 0
 
-## enable or disable showing a preview of the selected command
-## useful when the command is longer than the terminal width and is cut off
+// enable or disable showing preview of selected cmd use for cmd terminal width is cut
 # show_preview = false
 
-## what to do when the escape key is pressed when searching
-## possible values: return-original, return-query
-# exit_mode = "return-original"
+// esc key is pressed 
+values: return-original, return-query
+    # exit_mode = "return-original"
+values: emacs, subl
+    word_jump_mode = "emacs"
+// characters that count as a part of a word
+word_chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+//number of context lines to show when scrolling by pages
+scroll_context_lines = 1
+    break;
+// use ctrl instead of alt as the shortcut modifier key for numerical UI shortcuts
+alt-0 .. alt-9
+    ctrl_n_shortcuts = false
 
-## possible values: emacs, subl
-# word_jump_mode = "emacs"
+// cmd matches regex. use code to prevent write to log. regex is unanchored. does not start with ^ or end with $. So match anywhere in cmd. regex syntax
+# https://docs.rs/regex/latest/regex/#syntax
+history_filter = ["^secret-cmd", "^innocuous-cmd .*--secret=.+"];break
 
-## characters that count as a part of a word
-# word_chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+// cmd run with cwd match prevent any regex from write log. regex unanchored matches anywhere in CWD. regex syntax
+# https://docs.rs/regex/latest/regex/#syntax
+# cwd_filter = ["^/very/secret/area"];
 
-## number of context lines to show when scrolling by pages
-# scroll_context_lines = 1
-
-## use ctrl instead of alt as the shortcut modifier key for numerical UI shortcuts
-## alt-0 .. alt-9
-# ctrl_n_shortcuts = false
-
-## prevent commands matching any of these regexes from being written to history.
-## Note that these regular expressions are unanchored, i.e. if they don't start
-## with ^ or end with $, they'll match anywhere in the command.
-## For details on the supported regular expression syntax, see
-## https://docs.rs/regex/latest/regex/#syntax
-# history_filter = [
-#   "^secret-cmd",
-#   "^innocuous-cmd .*--secret=.+"
-# ]
-
-## prevent commands run with cwd matching any of these regexes from being written
-## to history. Note that these regular expressions are unanchored, i.e. if they don't
-## start with ^ or end with $, they'll match anywhere in CWD.
-## For details on the supported regular expression syntax, see
-## https://docs.rs/regex/latest/regex/#syntax
-# cwd_filter = [
-#   "^/very/secret/area"
-# ]
-
-    #eof
+#eof
