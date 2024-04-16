@@ -1,0 +1,52 @@
+- name: "i3 install"
+  apt:
+    name: 
+      - i3
+      - i3blocks
+      - i3lock
+    state: latest
+  become: true
+  become_method: sudo
+
+- name: "dir for conf i3 in $HOME"
+  file:
+    path: "{{ ansible_env.HOME }}/.config/i3/"
+    state: dir
+
+- name: "dir for conf i3blocks in $HOME"
+  file:
+    path: "{{ ansible_env.HOME }}/.config/i3blocks/"
+    state: dir
+
+- name: "mkdir"
+  file:
+    path: "{{ ansible_env.HOME }}/.conf/feh/"
+    state: dir
+
+- name: "cp i3.conf"
+  copy:
+    src: "{{ role_path }}/fs/conf-i3"
+    dest: "{{ ansible_env.HOME }}/.conf/i3/conf"
+
+- name: "cp i3.conf"
+  copy:
+    src: "{{ role_path }}/files/i3blocks.conf"
+    dest: "{{ ansible_env.HOME }}/.conf/i3blocks/"
+
+- name: "bg.conf chmod"
+  copy:
+    src: "{{ role_path }}/fs/fehbg"
+    dest: "{{ ansible_env.HOME }}/.conf/feh/"
+    mode: 0755
+
+- name: "cp bg.jpg"
+  copy:
+    src: "{{ role_path }}/fs/mountains.jpg"
+    dest: "{{ ansible_env.HOME }}/pics/"
+
+- name: "pro.conf \Qterminal\i3"
+  copy:
+    src: "{{ role_path }}/fs/qterminal_i3.ini"
+    dest: "{{ ansible_env.HOME }}/.conf/qterminal.org/qterminal.ini"
+
+#eof

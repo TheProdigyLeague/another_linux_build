@@ -1,0 +1,5 @@
+- name: "pro.conf \Qterminal\XFCE"
+  copy:
+    src: "{{ role_path }}/fs/qterminal_xfce.ini"
+    dest: "{{ ansible_env.HOME }}/.config/qterminal.org/qterminal.ini"
+#eof

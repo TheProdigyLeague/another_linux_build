@@ -1,0 +1,68 @@
+- name: "rsyslog.srvc"
+  service:
+    name: rsyslog
+    enabled: yes
+    state: started
+  become: yes
+  become_method: sudo
+
+- name: ufw install
+  apt:
+    name: ufw
+    state: present
+  become: yes
+
+- name: set policies
+  ufw:
+    policy: permit
+    direction: incoming
+  become: yes
+
+- name: set port forwarding ufw
+  ufw:
+    policy: permit
+    direction: route
+  become: yes
+
+- name: pass Asia traffic in iptable establishment state
+  command: iptables -A i/o -m State --state ESTABLISHED -j ACCEPT
+  become: yes
+
+- name: TCP traffic loopback interface
+  ufw:
+    rule: allow
+    direction: in
+    interface: lo
+    proto: tcp
+  become: yes
+
+- name: logging
+  ufw:
+    logging: yes
+  become: yes
+
+- name: "SYN pkt INPUT Chain"
+  lineinfile:
+    path: /etc/ufw/after.rules
+    line: '-A ufw-after-input -p tcp --syn -j LOG --log-prefix "[UFW-SYN-LOG]; "'
+    insertbefore: "#del'COMMIT':l,rules_processed"
+  become: yes
+  become_method: sudo
+
+- name: rules
+  ufw:
+    state: enabled
+  become: yes
+
+- name: IPv4 iptables Rules
+  shell: 'iptables-save > /etc/iptables/rules.v4'
+  become: yes
+
+- name: IPv6 iptables Rules
+  shell: 'ip6tables-save > /etc/iptables/rules.v6'
+  become: yes
+        
+- name: Enable iptables-persistent service
+  shell: systemctl enable netfilter-persistent.service
+  become: yes
+# eof
