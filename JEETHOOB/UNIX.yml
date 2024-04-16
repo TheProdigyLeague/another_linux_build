@@ -1,0 +1,121 @@
+# UNIX
+- name: "Setting date to UNIX"
+  command: "timedatectl set-timezone UNIX"
+  become: true
+  become_method: sudo
+
+- name: "^d db"
+  command: updatedb
+  become: true
+  become_method: sudo
+  
+# tasks fs for config-hardening
+
+- include_tasks: services.yml
+- include_tasks: kernel_param.yml
+- include_tasks: banner.yml
+- include_tasks: ufw.yml
+- include_tasks: bios.yml
+- include_tasks: i3.yml
+- include: ntp.yml
+
+- name: SSHD.srvc
+  service:
+    name: ssh
+    state: stopped
+    enabled: no
+  become: yes
+
+- name: netman.srvc
+  service:
+    name: NetworkManager
+    state: stopped
+    enabled: no
+  become: yes
+  
+# bios
+  
+  - name: dmidecode git BIOS info
+  shell: dmidecode -s bios-version
+  register: bios_version_output
+  changed_when: false
+  become: true
+
+- name: Display BIOS Version
+  debug:
+    msg: "BIOS Version: {{ bios_version_output.stdout }};;^d"
+    
+# kernel
+ 
+ name: kernel para -harden
+  sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    sysctl_set: yes
+    state: present
+  with_items:
+    - { name: 'net.ipv4.tcp_syncookies', value: '1' }                    # Enable syn flood protection
+    - { name: 'net.ipv4.conf.all.accept_source_route', value: '0' }      # Ignore source-routed packets
+    - { name: 'net.ipv6.conf.all.accept_source_route', value: '0' }      # IPv6 - Ignore ICMP redirects
+    - { name: 'net.ipv4.conf.default.accept_source_route', value: '0' }  # Ignore source-routed packets
+    - { name: 'net.ipv6.conf.default.accept_source_route', value: '0' }  # IPv6 - Ignore source-routed packets
+    - { name: 'net.ipv4.conf.all.accept_redirects', value: '0' }         # Ignore ICMP redirects
+    - { name: 'net.ipv6.conf.all.accept_redirects', value: '0' }         # IPv6 - Ignore ICMP redirects
+    - { name: 'net.ipv4.conf.default.accept_redirects', value: '0' }     # Ignore ICMP redirects
+    - { name: 'net.ipv6.conf.default.accept_redirects', value: '0' }     # IPv6 - Ignore ICMP redirects
+    - { name: 'net.ipv4.conf.all.secure_redirects', value: '1' }         # Ignore ICMP redirects from non-GW hosts
+    - { name: 'net.ipv4.conf.default.secure_redirects', value: '1' }     # Ignore ICMP redirects from non-GW hosts
+    - { name: 'net.ipv4.ip_forward', value: '0' }                        # Do not allow traffic between networks or act as a router
+    - { name: 'net.ipv6.conf.all.forwarding', value: '0' }               # IPv6 - Do not allow traffic between networks or act as a router
+    - { name: 'net.ipv4.conf.all.send_redirects', value: '0' }           # Don't allow traffic between networks or act as a router
+    - { name: 'net.ipv4.conf.default.send_redirects', value: '0' }       # Don't allow traffic between networks or act as a router
+    - { name: 'net.ipv4.conf.all.rp_filter', value: '1' }                # Reverse path filtering - IP spoofing protection
+    - { name: 'net.ipv4.conf.default.rp_filter', value: '1' }            # Reverse path filtering - IP spoofing protection
+    - { name: 'net.ipv4.icmp_echo_ignore_broadcasts', value: '1' }       # Ignore ICMP broadcasts to avoid participating in Smurf attacks
+    - { name: 'net.ipv4.icmp_ignore_bogus_error_responses', value: '1' } # Ignore bad ICMP errors
+    - { name: 'net.ipv4.icmp_echo_ignore_all', value: '0' }              # Ignore bad ICMP errors
+    - { name: 'net.ipv4.conf.all.log_martians', value: '1' }             # Log spoofed, source-routed, and redirect packets
+    - { name: 'net.ipv4.conf.default.log_martians', value: '1' }         # Log spoofed, source-routed, and redirect packets
+    - { name: 'net.ipv4.tcp_rfc1337', value: '1' }                       # Implement RFC 1337 fix
+    - { name: 'kernel.randomize_va_space', value: '2' }                  # Randomize addresses of mmap base, heap, stack and VDSO page
+    - { name: 'fs.protected_hardlinks', value: '1' }                     # Provide protection from ToCToU races
+    - { name: 'fs.protected_symlinks', value: '1' }                      # Provide protection from ToCToU races
+    - { name: 'kernel.kptr_restrict', value: '1' }                       # Make locating kernel addresses more difficult
+    - { name: 'kernel.perf_event_paranoid', value: '2' }                 # Set perf only available to root
+    - { name: 'net.ipv6.conf.default.disable_ipv6', value: '1' }         # Disable IPv6
+    - { name: 'net.ipv6.conf.all.disable_ipv6', value: '1' }             # Disable IPv6
+    - { name: 'net.ipv6.conf.all.autoconf', value: '0' }                 # Disable IPv6 autoconfiguration
+    - { name: 'net.ipv6.conf.default.autoconf', value: '0' }             # Disable IPv6 autoconfiguration
+  become: yes
+
+# neofetch.conf
+
+- name: "Copy neofetch conf"
+  copy:
+    src: "{{ role_path }}/files/neofetch.conf"
+    dest: "{{ ansible_env.HOME }}/.config/neofetch/config.conf"
+
+# pkg man
+
+- name: "Check if Atuin (apt) exists"
+  stat:
+    path: /usr/bin/atuin
+  register: atuin_binary
+
+- name: Install Atuin from GitHub
+  when: atuin_binary.stat.exists == False
+  shell: "curl https://raw.githubusercontent.com/atuinsh/atuin/main/install.sh | bash"
+
+- name: Create Atuin config directory
+  when: atuin_binary.stat.exists == False
+  file:
+    path: "{{ ansible_env.HOME }}/.config/atuin"
+    state: directory
+
+- name: "Copy Atuin config file"
+  when: atuin_binary.stat.exists == False
+  copy:
+    src: "{{ role_path }}/files/config.toml"
+    dest: "{{ ansible_env.HOME }}/.config/atuin/config.toml"
+
+#eof
